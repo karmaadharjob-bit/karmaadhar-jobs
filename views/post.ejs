@@ -1,0 +1,135 @@
+<%- include('partials/head') %>
+
+<div class="container narrow">
+  <header class="page-header">
+    <p class="eyebrow">For employers</p>
+    <h1>Post a job in two minutes</h1>
+    <p>Listings go live immediately. Be specific about salary and expectations — those roles get
+      three times more qualified applications.</p>
+  </header>
+
+  <form class="panel form-grid" action="/post" method="post" novalidate>
+    <div class="form-field">
+      <label for="title">Job title</label>
+      <input id="title" name="title" type="text" value="<%= values.title || '' %>" required
+        placeholder="e.g. Senior Frontend Engineer" />
+      <% if (errors.title) { %><p class="error-text"><%= errors.title %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="company">Company</label>
+      <input id="company" name="company" type="text" value="<%= values.company || '' %>" required />
+      <% if (errors.company) { %><p class="error-text"><%= errors.company %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="location">Location</label>
+      <input id="location" name="location" type="text" value="<%= values.location || '' %>" required
+        placeholder="e.g. Pune, Maharashtra" />
+      <% if (errors.location) { %><p class="error-text"><%= errors.location %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="category">Category</label>
+      <input id="category" name="category" type="text" value="<%= values.category || '' %>" required
+        list="category-options" placeholder="e.g. Design" />
+      <datalist id="category-options">
+        <option value="Technology"></option>
+        <option value="Design"></option>
+        <option value="Marketing"></option>
+        <option value="Sales"></option>
+        <option value="Finance"></option>
+        <option value="Healthcare"></option>
+        <option value="Education"></option>
+        <option value="Logistics"></option>
+        <option value="Customer Support"></option>
+        <option value="Human Resources"></option>
+      </datalist>
+      <% if (errors.category) { %><p class="error-text"><%= errors.category %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="type">Job type</label>
+      <select id="type" name="type">
+        <% types.forEach(function (type) { %>
+        <option value="<%= type %>" <%= values.type === type ? 'selected' : '' %>><%= type %></option>
+        <% }); %>
+      </select>
+      <% if (errors.type) { %><p class="error-text"><%= errors.type %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="workMode">Work mode</label>
+      <select id="workMode" name="workMode">
+        <% workModes.forEach(function (mode) { %>
+        <option value="<%= mode %>" <%= values.workMode === mode ? 'selected' : '' %>><%= mode %></option>
+        <% }); %>
+      </select>
+      <% if (errors.workMode) { %><p class="error-text"><%= errors.workMode %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="experience">Experience</label>
+      <input id="experience" name="experience" type="text" value="<%= values.experience || '' %>"
+        placeholder="e.g. 2–4 years" />
+    </div>
+
+    <div class="form-field">
+      <label for="contactEmail">Contact email</label>
+      <input id="contactEmail" name="contactEmail" type="email" value="<%= values.contactEmail || '' %>" required />
+      <% if (errors.contactEmail) { %><p class="error-text"><%= errors.contactEmail %></p><% } %>
+    </div>
+
+    <div class="salary-grid">
+      <div class="form-field">
+        <label for="salaryMin">Salary from</label>
+        <input id="salaryMin" name="salaryMin" type="number" min="0" step="1000"
+          value="<%= values.salaryMin || '' %>" placeholder="e.g. 900000" />
+        <% if (errors.salaryMin) { %><p class="error-text"><%= errors.salaryMin %></p><% } %>
+      </div>
+      <div class="form-field">
+        <label for="salaryMax">Salary to</label>
+        <input id="salaryMax" name="salaryMax" type="number" min="0" step="1000"
+          value="<%= values.salaryMax || '' %>" placeholder="e.g. 1400000" />
+        <% if (errors.salaryMax) { %><p class="error-text"><%= errors.salaryMax %></p><% } %>
+      </div>
+      <div class="form-field">
+        <label for="salaryPeriod">Period</label>
+        <select id="salaryPeriod" name="salaryPeriod">
+          <option value="year" <%= values.salaryPeriod !== 'month' ? 'selected' : '' %>>Per year</option>
+          <option value="month" <%= values.salaryPeriod === 'month' ? 'selected' : '' %>>Per month</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-field form-field--full">
+      <label for="description">Role description</label>
+      <textarea id="description" name="description" rows="5" required
+        placeholder="What will this person do, and why should they join?"><%= values.description || '' %></textarea>
+      <% if (errors.description) { %><p class="error-text"><%= errors.description %></p><% } %>
+    </div>
+
+    <div class="form-field">
+      <label for="responsibilities">Responsibilities <span class="optional">(one per line)</span></label>
+      <textarea id="responsibilities" name="responsibilities" rows="4"><%= values.responsibilities || '' %></textarea>
+    </div>
+
+    <div class="form-field">
+      <label for="requirements">Requirements <span class="optional">(one per line)</span></label>
+      <textarea id="requirements" name="requirements" rows="4"><%= values.requirements || '' %></textarea>
+    </div>
+
+    <div class="form-field form-field--full">
+      <label for="skills">Skills <span class="optional">(comma separated)</span></label>
+      <input id="skills" name="skills" type="text" value="<%= values.skills || '' %>"
+        placeholder="React, TypeScript, Testing" />
+    </div>
+
+    <div class="form-actions form-field--full">
+      <button class="btn btn--primary" type="submit">Publish job</button>
+      <a class="btn btn--ghost" href="/">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

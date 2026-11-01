@@ -1,0 +1,42 @@
+<%- include('partials/head') %>
+
+<div class="container narrow">
+  <header class="page-header">
+    <p class="eyebrow">About</p>
+    <h1>A job board with nothing hidden</h1>
+    <p>
+      Karmaadhar Jobs exists because looking for work should not require guessing. Every listing
+      here shows the salary band, the work mode, the experience expected and the contact point for
+      the hiring team.
+    </p>
+  </header>
+
+  <div class="prose">
+    <h2>For candidates</h2>
+    <p>
+      Search by keyword, location, category or work mode. Open any role to read the full brief, then
+      apply with your details and a short note — no account, no resume parser, no dark patterns.
+    </p>
+
+    <h2>For employers</h2>
+    <p>
+      Post a role from the <a href="/post">post a job</a> page. Listings publish immediately and
+      appear in the feed for candidates browsing by category and work mode. If salary is undisclosed,
+      the listing says so plainly.
+    </p>
+
+    <h2>How the data works</h2>
+    <p>
+      Listings and applications are stored by this application itself. The jobs feed is also
+      available as JSON at <a href="/api/jobs">/api/jobs</a> for anyone who wants to build on top of it.
+    </p>
+
+    <ul class="stats stats--inline">
+      <li><strong><%= stats.jobs %></strong><span>open roles</span></li>
+      <li><strong><%= stats.companies %></strong><span>hiring teams</span></li>
+      <li><strong><%= stats.applications %></strong><span>applications sent</span></li>
+    </ul>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

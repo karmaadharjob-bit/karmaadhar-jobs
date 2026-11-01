@@ -1,0 +1,156 @@
+<%- include('partials/head') %>
+
+<section class="hero">
+  <div class="container hero-inner">
+    <p class="eyebrow">Verified openings · Updated daily</p>
+    <h1>Find work that<br /><em>actually matters.</em></h1>
+    <p class="hero-sub">
+      Karmaadhar Jobs connects candidates with employers who publish the real details — salary,
+      location, work mode and expectations — before you apply.
+    </p>
+
+    <form class="search-bar" action="/" method="get" role="search" aria-label="Search jobs">
+      <label class="field field--grow">
+        <span class="field-label">What</span>
+        <input
+          type="search"
+          name="q"
+          value="<%= filters.q %>"
+          placeholder="Job title, company or skill"
+          autocomplete="off"
+        />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Where</span>
+        <select name="location">
+          <option value="">Any location</option>
+          <% locations.forEach(function (location) { %>
+          <option value="<%= location %>" <%= filters.location === location ? 'selected' : '' %>><%= location %></option>
+          <% }); %>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Category</span>
+        <select name="category">
+          <option value="">All categories</option>
+          <% categories.forEach(function (category) { %>
+          <option value="<%= category %>" <%= filters.category === category ? 'selected' : '' %>><%= category %></option>
+          <% }); %>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Work mode</span>
+        <select name="workMode">
+          <option value="">Any mode</option>
+          <% workModes.forEach(function (mode) { %>
+          <option value="<%= mode %>" <%= filters.workMode === mode ? 'selected' : '' %>><%= mode %></option>
+          <% }); %>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Type</span>
+        <select name="type">
+          <option value="">Any type</option>
+          <% types.forEach(function (type) { %>
+          <option value="<%= type %>" <%= filters.type === type ? 'selected' : '' %>><%= type %></option>
+          <% }); %>
+        </select>
+      </label>
+
+      <button class="btn btn--primary search-submit" type="submit">Search jobs</button>
+    </form>
+
+    <ul class="stats" aria-label="Site statistics">
+      <li><strong><%= stats.jobs %></strong><span>open roles</span></li>
+      <li><strong><%= stats.companies %></strong><span>hiring teams</span></li>
+      <li><strong><%= stats.categories %></strong><span>categories</span></li>
+      <li><strong><%= stats.applications %></strong><span>applications sent</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="container results" aria-labelledby="results-heading">
+  <div class="results-head">
+    <div>
+      <h2 id="results-heading">
+        <% if (hasFilters) { %>
+          <%= jobs.length %> matching role<%= jobs.length === 1 ? '' : 's' %>
+        <% } else { %>
+          Latest openings
+        <% } %>
+      </h2>
+      <p class="results-sub">
+        <% if (hasFilters) { %>
+          Filtered by your search. <a href="/">Clear all filters</a>
+        <% } else { %>
+          Fresh roles from teams hiring right now.
+        <% } %>
+      </p>
+    </div>
+    <div class="quick-filters" aria-label="Quick filters">
+      <a class="chip" href="/?workMode=Remote">Remote</a>
+      <a class="chip" href="/?type=Internship">Internships</a>
+      <a class="chip" href="/?type=Part-time">Part-time</a>
+      <a class="chip" href="/?category=Technology">Technology</a>
+    </div>
+  </div>
+
+  <% if (jobs.length === 0) { %>
+  <div class="empty-state">
+    <h3>No roles match that search</h3>
+    <p>Try a broader keyword or clear the filters to see everything that is open today.</p>
+    <a class="btn btn--primary" href="/">Show all jobs</a>
+  </div>
+  <% } else { %>
+  <div class="job-grid">
+    <% jobs.forEach(function (job) { %>
+    <a class="job-card" href="/jobs/<%= job.id %>">
+      <div class="card-top">
+        <span class="avatar" aria-hidden="true"><%= initials(job.company) %></span>
+        <div class="card-headings">
+          <h3 class="job-title"><%= job.title %></h3>
+          <p class="job-company"><%= job.company %> · <%= job.location %></p>
+        </div>
+      </div>
+
+      <p class="job-salary"><%= formatSalary(job) %></p>
+
+      <ul class="meta-list">
+        <li class="chip chip--soft"><%= job.type %></li>
+        <li class="chip chip--soft"><%= job.workMode %></li>
+        <li class="chip chip--soft"><%= job.experience %></li>
+      </ul>
+
+      <% if (job.skills && job.skills.length) { %>
+      <ul class="tag-list">
+        <% job.skills.slice(0, 3).forEach(function (skill) { %>
+        <li class="tag"><%= skill %></li>
+        <% }); %>
+      </ul>
+      <% } %>
+
+      <div class="card-footer">
+        <span class="posted">Posted <%= timeAgo(job.postedAt) %></span>
+        <span class="card-cta">View role <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+    <% }); %>
+  </div>
+  <% } %>
+</section>
+
+<section class="cta-band">
+  <div class="container cta-inner">
+    <div>
+      <h2>Hiring? Post the role directly.</h2>
+      <p>No account required. Publish a listing with the details candidates actually need.</p>
+    </div>
+    <a class="btn btn--onDark" href="/post">Post a job</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

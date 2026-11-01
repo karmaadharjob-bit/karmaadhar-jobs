@@ -1,0 +1,143 @@
+<%- include('partials/head') %>
+
+<div class="container detail-layout">
+  <article class="job-detail">
+    <a class="back-link" href="/">← All jobs</a>
+
+    <% if (posted) { %>
+    <div class="notice notice--success" role="status">
+      <strong>Your job is live.</strong> It is now listed on the home page and open for applications.
+    </div>
+    <% } %>
+
+    <header class="job-head">
+      <span class="avatar avatar--lg" aria-hidden="true"><%= initials(job.company) %></span>
+      <div>
+        <h1><%= job.title %></h1>
+        <p class="job-company"><%= job.company %><% if (job.companySize) { %> · <%= job.companySize %><% } %></p>
+        <ul class="meta-list">
+          <li class="chip"><%= job.location %></li>
+          <li class="chip"><%= job.workMode %></li>
+          <li class="chip"><%= job.type %></li>
+          <li class="chip"><%= job.experience %></li>
+        </ul>
+      </div>
+    </header>
+
+    <dl class="fact-row">
+      <div>
+        <dt>Salary</dt>
+        <dd><%= formatSalary(job) %></dd>
+      </div>
+      <div>
+        <dt>Category</dt>
+        <dd><%= job.category %></dd>
+      </div>
+      <div>
+        <dt>Posted</dt>
+        <dd><%= timeAgo(job.postedAt) %></dd>
+      </div>
+      <div>
+        <dt>Applicants</dt>
+        <dd><%= applicants %></dd>
+      </div>
+    </dl>
+
+    <section class="section-block">
+      <h2>About the role</h2>
+      <p><%= job.description %></p>
+    </section>
+
+    <% if (job.responsibilities && job.responsibilities.length) { %>
+    <section class="section-block">
+      <h2>What you will do</h2>
+      <ul class="bullet-list">
+        <% job.responsibilities.forEach(function (item) { %>
+        <li><%= item %></li>
+        <% }); %>
+      </ul>
+    </section>
+    <% } %>
+
+    <% if (job.requirements && job.requirements.length) { %>
+    <section class="section-block">
+      <h2>What we are looking for</h2>
+      <ul class="bullet-list">
+        <% job.requirements.forEach(function (item) { %>
+        <li><%= item %></li>
+        <% }); %>
+      </ul>
+    </section>
+    <% } %>
+
+    <% if (job.skills && job.skills.length) { %>
+    <section class="section-block">
+      <h2>Skills</h2>
+      <ul class="tag-list">
+        <% job.skills.forEach(function (skill) { %>
+        <li class="tag"><%= skill %></li>
+        <% }); %>
+      </ul>
+    </section>
+    <% } %>
+  </article>
+
+  <aside class="apply-card" id="apply" aria-labelledby="apply-heading">
+    <% if (applied) { %>
+    <div class="success-panel">
+      <span class="success-check" aria-hidden="true">✓</span>
+      <h2 id="apply-heading">Application sent</h2>
+      <p>
+        Your application for <strong><%= job.title %></strong> has been recorded and shared with
+        <%= job.company %>. They usually respond within a week.
+      </p>
+      <a class="btn btn--primary" href="/">Browse more jobs</a>
+    </div>
+    <% } else { %>
+    <h2 id="apply-heading">Apply for this role</h2>
+    <p class="apply-sub">Takes about two minutes. No account needed.</p>
+
+    <form action="/jobs/<%= job.id %>/apply" method="post" novalidate>
+      <div class="form-field">
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" value="<%= values.name || '' %>" required
+          <%= errors.name ? 'aria-invalid="true" class="input--error"' : '' %> />
+        <% if (errors.name) { %><p class="error-text"><%= errors.name %></p><% } %>
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" value="<%= values.email || '' %>" required
+          <%= errors.email ? 'aria-invalid="true" class="input--error"' : '' %> />
+        <% if (errors.email) { %><p class="error-text"><%= errors.email %></p><% } %>
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Phone <span class="optional">(optional)</span></label>
+        <input id="phone" name="phone" type="tel" value="<%= values.phone || '' %>"
+          <%= errors.phone ? 'aria-invalid="true" class="input--error"' : '' %> />
+        <% if (errors.phone) { %><p class="error-text"><%= errors.phone %></p><% } %>
+      </div>
+
+      <div class="form-field">
+        <label for="portfolio">Portfolio or LinkedIn <span class="optional">(optional)</span></label>
+        <input id="portfolio" name="portfolio" type="url" value="<%= values.portfolio || '' %>"
+          placeholder="https://" <%= errors.portfolio ? 'aria-invalid="true" class="input--error"' : '' %> />
+        <% if (errors.portfolio) { %><p class="error-text"><%= errors.portfolio %></p><% } %>
+      </div>
+
+      <div class="form-field">
+        <label for="coverLetter">Why are you a good fit?</label>
+        <textarea id="coverLetter" name="coverLetter" rows="5" required
+          <%= errors.coverLetter ? 'aria-invalid="true" class="input--error"' : '' %>><%= values.coverLetter || '' %></textarea>
+        <% if (errors.coverLetter) { %><p class="error-text"><%= errors.coverLetter %></p><% } %>
+      </div>
+
+      <button class="btn btn--primary btn--block" type="submit">Send application</button>
+      <p class="form-hint">By applying you agree to share these details with <%= job.company %>.</p>
+    </form>
+    <% } %>
+  </aside>
+</div>
+
+<%- include('partials/footer') %>
