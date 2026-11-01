@@ -2,6 +2,7 @@
 
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -226,3 +227,47 @@ test('health endpoint reports ok', async () => {
   assert.equal(body.status, 'ok');
   assert.ok(body.jobs > 10);
 });
+
+test('health endpoint reports a writable file-backed store', async () => {
+  const body = await (await fetch(`${base}/api/health`)).json();
+  assert.equal(body.storage.writable, true);
+  assert.equal(body.storage.mode, 'file');
+  assert.equal(body.storage.path, dbPath());
+  assert.equal(body.storage.error, null);
+});
+
+test('posted jobs and applications survive a fresh process start', async () => {
+  const posted = await postForm(`${base}/post`, {
+    ...validJob,
+    title: 'Durability Probe Engineer',
+    contactEmail: 'durability@sunriseretail.example'
+  });
+  assert.equal(posted.status, 302);
+
+  const applied = await postForm(`${base}/jobs/1/apply`, {
+    name: 'Restart Survivor',
+    email: 'restart.survivor@example.com',
+    coverLetter: 'Checking that my application is still here after the process restarts cleanly.'
+  });
+  assert.equal(applied.status, 302);
+
+  // A separate process reads only from disk, which is what a redeploy does.
+  const script = `
+    process.env.DATA_DIR = ${JSON.stringify(tmpDir)};
+    const store = require(${JSON.stringify(path.join(__dirname, '..', 'lib', 'store.js'))});
+    process.stdout.write(JSON.stringify({
+      titles: store.listJobs({}).map((job) => job.title),
+      applicants: store.countApplications(1),
+      storage: store.getStorageInfo()
+    }));
+  `;
+  const out = JSON.parse(execFileSync(process.execPath, ['-e', script], { encoding: 'utf8' }));
+
+  assert.ok(
+    out.titles.includes('Durability Probe Engineer'),
+    'job posted before restart should still be listed'
+  );
+  assert.equal(out.applicants, 1, 'application submitted before restart should still be stored');
+  assert.equal(out.storage.writable, true);
+});
+
