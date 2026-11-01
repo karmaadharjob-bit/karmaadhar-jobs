@@ -53,7 +53,7 @@ const validJob = {
 };
 
 before(async () => {
-  server = app.listen(0, '127.0.0.1');
+  server = app.listen(0, '0.0.0.0');
   await new Promise((resolve) => server.once('listening', resolve));
   base = `http://127.0.0.1:${server.address().port}`;
 });
