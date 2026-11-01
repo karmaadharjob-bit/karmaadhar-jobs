@@ -84,10 +84,12 @@ function validateJob(body) {
     title: text(body.title, 120),
     company: text(body.company, 90),
     location: text(body.location, 90),
+    city: text(body.city, 60),
     category: text(body.category, 60),
     type: text(body.type, 30),
     workMode: text(body.workMode, 20),
     experience: text(body.experience, 40),
+    qualification: text(body.qualification, 40),
     salaryMin: toAmount(body.salaryMin),
     salaryMax: toAmount(body.salaryMax),
     salaryPeriod: body.salaryPeriod === 'month' ? 'month' : 'year',
@@ -101,6 +103,8 @@ function validateJob(body) {
   if (data.title.length < 3) errors.title = 'Job title is required (at least 3 characters).';
   if (data.company.length < 2) errors.company = 'Company name is required.';
   if (data.location.length < 2) errors.location = 'Location is required.';
+  if (data.city && data.city.length < 2) errors.city = 'Enter a valid city.';
+  if (!data.city) data.city = store.cityFromLocation(data.location);
   if (data.category.length < 2) errors.category = 'Category is required.';
   if (!store.jobTypes.includes(data.type)) errors.type = 'Choose a valid job type.';
   if (!store.workModes.includes(data.workMode)) errors.workMode = 'Choose a valid work mode.';
