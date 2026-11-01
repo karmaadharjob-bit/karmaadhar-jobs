@@ -3,6 +3,7 @@
 const path = require('node:path');
 const express = require('express');
 const store = require('./lib/store');
+const { metaFor, jobCategories } = require('./lib/categories');
 const { formatSalary, timeAgo, initials } = require('./lib/format');
 
 const app = express();
@@ -18,6 +19,10 @@ app.locals.timeAgo = timeAgo;
 app.locals.initials = initials;
 app.locals.types = store.jobTypes;
 app.locals.workModes = store.workModes;
+app.locals.experienceLevels = store.experienceLevels;
+app.locals.qualifications = store.qualifications;
+app.locals.jobCategories = jobCategories;
+app.locals.categoryMeta = metaFor;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
 const PHONE_RE = /^[+()\d][\d\s()-]{6,19}$/;
