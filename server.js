@@ -124,22 +124,34 @@ function validateJob(body) {
 app.get('/', (req, res) => {
   const filters = {
     q: text(req.query.q, 80),
+    city: text(req.query.city, 60),
     location: text(req.query.location, 90),
     category: text(req.query.category, 60),
     type: text(req.query.type, 30),
-    workMode: text(req.query.workMode, 20)
+    workMode: text(req.query.workMode, 20),
+    experience: text(req.query.experience, 20)
   };
   const jobs = store.listJobs(filters);
   const hasFilters = Boolean(
-    filters.q || filters.location || filters.category || filters.type || filters.workMode
+    filters.q ||
+      filters.city ||
+      filters.location ||
+      filters.category ||
+      filters.type ||
+      filters.workMode ||
+      filters.experience
   );
 
   res.render('index', {
-    title: hasFilters ? `${jobs.length} job${jobs.length === 1 ? '' : 's'} found` : 'Find work that matters',
+    title: hasFilters
+      ? `${jobs.length} job${jobs.length === 1 ? '' : 's'} found`
+      : 'Find jobs near you',
     activeNav: 'jobs',
     jobs,
     filters,
     hasFilters,
+    categoryTiles: store.getCategoryTiles(),
+    cities: store.getCities(),
     categories: store.getCategories(),
     locations: store.getLocations(),
     stats: store.getStats()
@@ -233,10 +245,12 @@ app.get('/about', (req, res) => {
 app.get('/api/jobs', (req, res) => {
   const jobs = store.listJobs({
     q: text(req.query.q, 80),
+    city: text(req.query.city, 60),
     location: text(req.query.location, 90),
     category: text(req.query.category, 60),
     type: text(req.query.type, 30),
-    workMode: text(req.query.workMode, 20)
+    workMode: text(req.query.workMode, 20),
+    experience: text(req.query.experience, 20)
   });
   res.json({ count: jobs.length, jobs });
 });
