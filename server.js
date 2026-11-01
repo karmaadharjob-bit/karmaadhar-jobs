@@ -233,7 +233,14 @@ app.get('/api/jobs', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', jobs: store.getStats().jobs, uptime: Math.round(process.uptime()) });
+  res.json({
+    status: 'ok',
+    jobs: store.getStats().jobs,
+    uptime: Math.round(process.uptime()),
+    // Surfaced so a volume that is not writable is visible instead of
+    // silently degrading to in-memory storage.
+    storage: store.getStorageInfo()
+  });
 });
 
 app.use((req, res) => {
