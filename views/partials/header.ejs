@@ -1,0 +1,13 @@
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span class="brand-name">Karmaadhar<span class="brand-dot">.</span>jobs</span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="/" class="<%= activeNav === 'jobs' ? 'is-active' : '' %>">Find jobs</a>
+          <a href="/about" class="<%= activeNav === 'about' ? 'is-active' : '' %>">About</a>
+          <a href="/post" class="btn btn--primary btn--sm <%= activeNav === 'post' ? 'is-active' : '' %>">Post a job</a>
+        </nav>
+      </div>
+    </header>
