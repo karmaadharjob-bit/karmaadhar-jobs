@@ -13,11 +13,12 @@ ENV NODE_ENV=production \
     DATA_DIR=/app/data
 
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
-
 COPY --chown=node:node . .
 
-RUN mkdir -p /app/data && chown -R node:node /app/data /app
+# npm ci replaces any copied node_modules with a clean, lockfile-pinned install.
+RUN npm ci --omit=dev && npm cache clean --force
+
+RUN mkdir -p /app/data && chown -R node:node /app/data
 
 USER node
 
