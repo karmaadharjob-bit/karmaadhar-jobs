@@ -3,38 +3,42 @@
 <div class="container narrow">
   <header class="page-header">
     <p class="eyebrow">About</p>
-    <h1>A job board with nothing hidden</h1>
+    <h1>Blue-collar jobs, nothing hidden</h1>
     <p>
-      Karmaadhar Jobs exists because looking for work should not require guessing. Every listing
-      here shows the salary band, the work mode, the experience expected and the contact point for
-      the hiring team.
+      Karmaadhar Jobs exists because finding work as a delivery rider, driver, guard, cook or
+      electrician should not depend on knowing someone. Every listing shows the monthly salary, the
+      area, the experience needed and the qualification required before you apply.
     </p>
   </header>
 
   <div class="prose">
-    <h2>For candidates</h2>
+    <h2>For job seekers</h2>
     <p>
-      Search by keyword, location, category or work mode. Open any role to read the full brief, then
-      apply with your details and a short note — no account, no resume parser, no dark patterns.
+      Pick your city, tap a category like <a href="/?category=Delivery">delivery</a> or
+      <a href="/?category=Security%20Guard">security</a>, and apply with your name and mobile
+      number. No account, no resume upload, no registration fee. Freshers are welcome — use the
+      <a href="/?experience=Fresher">fresher jobs</a> filter.
     </p>
 
     <h2>For employers</h2>
     <p>
-      Post a role from the <a href="/post">post a job</a> page. Listings publish immediately and
-      appear in the feed for candidates browsing by category and work mode. If salary is undisclosed,
-      the listing says so plainly.
+      Post a job from the <a href="/post">post a job</a> page in two minutes. Listings publish
+      immediately and are visible to candidates browsing by category, city, experience and job type.
+      Always mention the monthly salary — workers skip listings that hide pay.
     </p>
 
     <h2>How the data works</h2>
     <p>
-      Listings and applications are stored by this application itself. The jobs feed is also
-      available as JSON at <a href="/api/jobs">/api/jobs</a> for anyone who wants to build on top of it.
+      Listings and applications are stored by this application itself, on durable storage, so they
+      survive restarts. The jobs feed is also available as JSON at
+      <a href="/api/jobs">/api/jobs</a>.
     </p>
 
-    <ul class="stats stats--inline">
-      <li><strong><%= stats.jobs %></strong><span>open roles</span></li>
-      <li><strong><%= stats.companies %></strong><span>hiring teams</span></li>
-      <li><strong><%= stats.applications %></strong><span>applications sent</span></li>
+    <ul class="stats stats--inline stats--light">
+      <li><strong><%= stats.jobs %></strong><span>jobs hiring</span></li>
+      <li><strong><%= stats.companies %></strong><span>employers</span></li>
+      <li><strong><%= stats.cities %></strong><span>cities</span></li>
+      <li><strong><%= stats.applications %></strong><span>applications</span></li>
     </ul>
   </div>
 </div>
