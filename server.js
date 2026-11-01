@@ -20,6 +20,7 @@ app.locals.initials = initials;
 app.locals.types = store.jobTypes;
 app.locals.workModes = store.workModes;
 app.locals.experienceLevels = store.experienceLevels;
+app.locals.experienceOptions = store.experienceOptions;
 app.locals.qualifications = store.qualifications;
 app.locals.jobCategories = jobCategories;
 app.locals.categoryMeta = metaFor;
@@ -88,8 +89,8 @@ function validateJob(body) {
     category: text(body.category, 60),
     type: text(body.type, 30),
     workMode: text(body.workMode, 20),
-    experience: text(body.experience, 40),
-    qualification: text(body.qualification, 40),
+    experience: text(body.experience, 40) || 'Fresher',
+    qualification: text(body.qualification, 40) || '10th Pass',
     salaryMin: toAmount(body.salaryMin),
     salaryMax: toAmount(body.salaryMax),
     salaryPeriod: body.salaryPeriod === 'month' ? 'month' : 'year',
