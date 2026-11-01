@@ -1,37 +1,67 @@
     </main>
+
     <footer class="site-footer">
       <div class="container footer-grid">
-        <div>
-          <div class="brand brand--footer">
+        <div class="footer-brand">
+          <a class="brand brand--footer" href="/">
             <span class="brand-mark" aria-hidden="true">K</span>
-            <span class="brand-name">Karmaadhar<span class="brand-dot">.</span>jobs</span>
-          </div>
-          <p class="footer-copy">
-            A job board built for honest listings and real opportunities. Employers post directly,
-            candidates apply without a login wall.
+            <span class="brand-name">Karmaadhar<em>jobs</em></span>
+          </a>
+          <p>
+            Blue-collar and entry-level jobs across India — delivery, drivers, security, housekeeping,
+            cooks, electricians and more. Salary shown per month, apply in two minutes.
           </p>
         </div>
-        <div>
-          <h2 class="footer-heading">Candidates</h2>
-          <ul class="footer-links">
-            <li><a href="/">Browse jobs</a></li>
-            <li><a href="/?type=Internship">Internships</a></li>
-            <li><a href="/?workMode=Remote">Remote roles</a></li>
+
+        <nav class="footer-col" aria-labelledby="footer-jobs">
+          <h2 id="footer-jobs">Popular jobs</h2>
+          <ul>
+            <li><a href="/?category=Delivery">Delivery jobs</a></li>
+            <li><a href="/?category=Driver">Driver jobs</a></li>
+            <li><a href="/?category=Security%20Guard">Security guard jobs</a></li>
+            <li><a href="/?category=Housekeeping">Housekeeping jobs</a></li>
+            <li><a href="/?category=Cook">Cook jobs</a></li>
+            <li><a href="/?category=Electrician">Electrician jobs</a></li>
           </ul>
-        </div>
-        <div>
-          <h2 class="footer-heading">Employers</h2>
-          <ul class="footer-links">
+        </nav>
+
+        <nav class="footer-col" aria-labelledby="footer-cities">
+          <h2 id="footer-cities">Jobs by city</h2>
+          <ul>
+            <li><a href="/?city=Mumbai">Jobs in Mumbai</a></li>
+            <li><a href="/?city=Delhi%20NCR">Jobs in Delhi NCR</a></li>
+            <li><a href="/?city=Bengaluru">Jobs in Bengaluru</a></li>
+            <li><a href="/?city=Pune">Jobs in Pune</a></li>
+            <li><a href="/?city=Hyderabad">Jobs in Hyderabad</a></li>
+            <li><a href="/?city=Jaipur">Jobs in Jaipur</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer-col" aria-labelledby="footer-site">
+          <h2 id="footer-site">Karmaadhar</h2>
+          <ul>
+            <li><a href="/">All jobs</a></li>
+            <li><a href="/?experience=Fresher">Fresher jobs</a></li>
             <li><a href="/post">Post a job</a></li>
-            <li><a href="/about">How it works</a></li>
+            <li><a href="/about">About us</a></li>
             <li><a href="/api/jobs">Jobs API</a></li>
+            <li><a href="/api/health">Health status</a></li>
           </ul>
-        </div>
+        </nav>
       </div>
+
       <div class="container footer-bottom">
-        <span>© <%= new Date().getFullYear() %> Karmaadhar Jobs</span>
-        <span>Built for the AppJet sandbox</span>
+        <p>© <%= new Date().getFullYear() %> Karmaadhar Jobs. Naukri, seedhi baat.</p>
+        <p>No registration fee is ever charged to candidates.</p>
       </div>
     </footer>
+
+    <nav class="bottom-nav" aria-label="Quick navigation">
+      <a href="/" class="bottom-nav-link"><span aria-hidden="true">🏠</span>Home</a>
+      <a href="#main" class="bottom-nav-link"><span aria-hidden="true">🔍</span>Search</a>
+      <a href="/?category=Delivery" class="bottom-nav-link"><span aria-hidden="true">🛵</span>Delivery</a>
+      <a href="/post" class="bottom-nav-link"><span aria-hidden="true">📝</span>Post job</a>
+      <a href="/about" class="bottom-nav-link"><span aria-hidden="true">ℹ️</span>About</a>
+    </nav>
   </body>
 </html>
