@@ -35,22 +35,24 @@ function postForm(url, fields, options = {}) {
 }
 
 const validJob = {
-  title: 'Warehouse Supervisor',
-  company: 'Sunrise Retail',
-  location: 'Nagpur, Maharashtra',
-  category: 'Logistics',
+  title: 'Security Guard (Night Shift)',
+  company: 'Shree Facility Services',
+  city: 'Nagpur',
+  location: 'Sitabuldi, Nagpur',
+  category: 'Security Guard',
   type: 'Full-time',
   workMode: 'On-site',
-  experience: '3–5 years',
-  contactEmail: 'hiring@sunriseretail.example',
+  experience: '1 - 2 years',
+  qualification: '10th Pass',
+  contactEmail: 'hiring@shreefacility.example',
   description:
-    'Supervise inbound and outbound warehouse operations for our central distribution centre.',
-  responsibilities: 'Plan daily shifts\nTrack inventory accuracy',
-  requirements: '3+ years in warehouse operations\nComfort with WMS software',
-  skills: 'Inventory, WMS, Team Leadership',
-  salaryMin: '450000',
-  salaryMax: '600000',
-  salaryPeriod: 'year'
+    'Guard the main gate of a residential society at night, log visitors and do two rounds of the campus every shift.',
+  responsibilities: 'Check visitor IDs at the gate\nPatrol the campus twice per shift',
+  requirements: 'Ex-servicemen welcome\nAadhaar card and police verification',
+  skills: 'Gate Security, Visitor Log, Night Shift',
+  salaryMin: '18000',
+  salaryMax: '24000',
+  salaryPeriod: 'month'
 };
 
 before(async () => {
@@ -64,54 +66,87 @@ after(() => {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
-test('home page lists seeded jobs', async () => {
+test('home page lists seeded blue-collar jobs', async () => {
   const res = await fetch(`${base}/`);
   const html = await res.text();
   assert.equal(res.status, 200);
   assert.match(html, /Karmaadhar/);
-  assert.match(html, /Senior Frontend Engineer/);
-  assert.match(html, /Staff Nurse/);
-  assert.match(html, /Latest openings/);
+  assert.match(html, /Find a job near you/);
+  assert.match(html, /Delivery Executive/);
+  assert.match(html, /Security Guard/);
+  assert.match(html, /Cook \(North Indian\)/);
+});
+
+test('home page shows category shortcuts, city list and monthly salaries', async () => {
+  const html = await (await fetch(`${base}/`)).text();
+  assert.match(html, /category-tile/);
+  assert.match(html, /Housekeeping/);
+  assert.match(html, /Electrician/);
+  assert.match(html, /<option value="Mumbai"/);
+  assert.match(html, /per month/);
+  assert.doesNotMatch(html, /per year/);
 });
 
 test('category filter narrows results', async () => {
-  const res = await fetch(`${base}/?category=Healthcare`);
-  const html = await res.text();
-  assert.equal(res.status, 200);
-  assert.match(html, /Staff Nurse/);
-  assert.doesNotMatch(html, /Senior Frontend Engineer/);
+  const html = await (await fetch(`${base}/?category=Driver`)).text();
+  assert.match(html, /Cab Driver/);
+  assert.doesNotMatch(html, /Delivery Executive</);
 });
 
-test('keyword search matches title and skill text', async () => {
-  const byTitle = await (await fetch(`${base}/?q=nurse`)).text();
-  assert.match(byTitle, /Staff Nurse/);
-  assert.doesNotMatch(byTitle, /Operations Associate/);
-
-  const bySkill = await (await fetch(`${base}/?q=tally`)).text();
-  assert.match(bySkill, /Accounts Executive/);
+test('city filter narrows results', async () => {
+  const html = await (await fetch(`${base}/?city=Pune`)).text();
+  assert.match(html, /Commis Chef \/ Kitchen Helper/);
+  assert.doesNotMatch(html, /Cab Driver/);
 });
 
-test('work mode filter returns only remote roles', async () => {
-  const html = await (await fetch(`${base}/?workMode=Remote`)).text();
-  assert.match(html, /Digital Marketing Manager/);
-  assert.doesNotMatch(html, /Operations Associate/);
+test('experience filter narrows results', async () => {
+  const fresher = await (await fetch(`${base}/?experience=Fresher`)).text();
+  assert.match(fresher, /Delivery Executive/);
+  assert.doesNotMatch(fresher, /Heavy Truck Driver/);
+
+  const experienced = await (await fetch(`${base}/?experience=2%2B%20years`)).text();
+  assert.match(experienced, /Heavy Truck Driver/);
+});
+
+test('keyword search matches seeded titles', async () => {
+  const byTitle = await (await fetch(`${base}/?q=plumber`)).text();
+  assert.match(byTitle, /Plumber/);
+  assert.doesNotMatch(byTitle, /Cab Driver/);
+
+  const byCategory = await (await fetch(`${base}/?q=housekeeping`)).text();
+  assert.match(byCategory, /Housekeeping Staff \(Office\)/);
 });
 
 test('search with no matches renders an empty state', async () => {
   const res = await fetch(`${base}/?q=zzzznotarealskill`);
   const html = await res.text();
   assert.equal(res.status, 200);
-  assert.match(html, /No roles match that search/);
+  assert.match(html, /No jobs match that search/);
 });
 
 test('job detail page renders the full brief', async () => {
   const res = await fetch(`${base}/jobs/1`);
   const html = await res.text();
   assert.equal(res.status, 200);
-  assert.match(html, /Senior Frontend Engineer/);
-  assert.match(html, /About the role/);
-  assert.match(html, /What we are looking for/);
-  assert.match(html, /Apply for this role/);
+  assert.match(html, /Delivery Executive/);
+  assert.match(html, /Job description/);
+  assert.match(html, /Your daily work/);
+  assert.match(html, /Who can apply/);
+  assert.match(html, /Skills/);
+  assert.match(html, /Apply for this job/);
+  assert.match(html, /Andheri East, Mumbai/);
+  assert.match(html, /₹/);
+});
+
+test('post a job page renders the employer form', async () => {
+  const res = await fetch(`${base}/post`);
+  const html = await res.text();
+  assert.equal(res.status, 200);
+  assert.match(html, /Post a job in two minutes/);
+  assert.match(html, /Salary from \(₹ per month\)/);
+  assert.match(html, /name="experience"/);
+  assert.match(html, /name="qualification"/);
+  assert.match(html, /value="Security Guard"/);
 });
 
 test('unknown pages return 404', async () => {
@@ -127,7 +162,7 @@ test('valid application is stored and redirects back to the job', async () => {
     email: 'priya.sharma@example.com',
     phone: '+91 98765 43210',
     portfolio: 'https://example.com/priya',
-    coverLetter: 'I have three years of dispatch coordination experience and know the Pune network well.'
+    coverLetter: 'I ride my own scooter and have delivered in Koramangala for two years.'
   });
   assert.equal(res.status, 302);
   assert.match(res.headers.get('location'), /^\/jobs\/2\?applied=1/);
@@ -164,16 +199,21 @@ test('employer can publish a job and it appears in the listing', async () => {
 
   const newId = Number(location.match(/\/jobs\/(\d+)/)[1]);
   const detail = await (await fetch(`${base}${location}`)).text();
-  assert.match(detail, /Warehouse Supervisor/);
+  assert.match(detail, /Security Guard \(Night Shift\)/);
   assert.match(detail, /Your job is live/);
+  assert.match(detail, /Sitabuldi, Nagpur/);
 
-  const home = await (await fetch(`${base}/?category=Logistics`)).text();
-  assert.match(home, /Warehouse Supervisor/);
+  const home = await (await fetch(`${base}/?city=Nagpur`)).text();
+  assert.match(home, /Security Guard \(Night Shift\)/);
 
   const stored = readDb().jobs.find((job) => job.id === newId);
-  assert.equal(stored.company, 'Sunrise Retail');
-  assert.deepEqual(stored.skills, ['Inventory', 'WMS', 'Team Leadership']);
-  assert.equal(stored.salaryMin, 450000);
+  assert.equal(stored.company, 'Shree Facility Services');
+  assert.equal(stored.city, 'Nagpur');
+  assert.equal(stored.experience, '1 - 2 years');
+  assert.equal(stored.qualification, '10th Pass');
+  assert.deepEqual(stored.skills, ['Gate Security', 'Visitor Log', 'Night Shift']);
+  assert.equal(stored.salaryMin, 18000);
+  assert.equal(stored.salaryPeriod, 'month');
 });
 
 test('job posting validation rejects incomplete listings', async () => {
@@ -182,6 +222,8 @@ test('job posting validation rejects incomplete listings', async () => {
     title: '',
     description: 'short',
     type: 'Freelance',
+    category: '',
+    experience: '9 years',
     contactEmail: 'nope'
   });
   assert.equal(res.status, 400);
@@ -189,11 +231,13 @@ test('job posting validation rejects incomplete listings', async () => {
   assert.match(html, /Job title is required/);
   assert.match(html, /at least 40 characters/);
   assert.match(html, /Choose a valid job type/);
+  assert.match(html, /Category is required/);
+  assert.match(html, /Choose the experience you need/);
   assert.match(html, /A valid contact email is required/);
 });
 
 test('salary range is validated', async () => {
-  const res = await postForm(`${base}/post`, { ...validJob, salaryMin: '900000', salaryMax: '100000' });
+  const res = await postForm(`${base}/post`, { ...validJob, salaryMin: '30000', salaryMax: '10000' });
   assert.equal(res.status, 400);
   assert.match(await res.text(), /Maximum salary cannot be lower than the minimum/);
 });
@@ -210,13 +254,25 @@ test('user supplied HTML is escaped in rendered pages', async () => {
 });
 
 test('jobs API returns JSON for filters', async () => {
-  const res = await fetch(`${base}/api/jobs?type=Internship`);
-  assert.equal(res.status, 200);
-  assert.match(res.headers.get('content-type'), /application\/json/);
-  const body = await res.json();
-  assert.ok(body.count >= 1);
-  for (const job of body.jobs) {
-    assert.equal(job.type, 'Internship');
+  const byType = await fetch(`${base}/api/jobs?type=Part-time`);
+  assert.equal(byType.status, 200);
+  assert.match(byType.headers.get('content-type'), /application\/json/);
+  const typeBody = await byType.json();
+  assert.ok(typeBody.count >= 1);
+  for (const job of typeBody.jobs) {
+    assert.equal(job.type, 'Part-time');
+  }
+
+  const byCity = await (await fetch(`${base}/api/jobs?city=Mumbai`)).json();
+  assert.ok(byCity.count >= 1);
+  for (const job of byCity.jobs) {
+    assert.equal(job.city, 'Mumbai');
+  }
+
+  const byExperience = await (await fetch(`${base}/api/jobs?experience=2%2B%20years`)).json();
+  assert.ok(byExperience.count >= 1);
+  for (const job of byExperience.jobs) {
+    assert.equal(job.experience, '2+ years');
   }
 });
 
@@ -239,8 +295,9 @@ test('health endpoint reports a writable file-backed store', async () => {
 test('posted jobs and applications survive a fresh process start', async () => {
   const posted = await postForm(`${base}/post`, {
     ...validJob,
-    title: 'Durability Probe Engineer',
-    contactEmail: 'durability@sunriseretail.example'
+    title: 'Durability Probe Driver',
+    category: 'Driver',
+    contactEmail: 'durability@shreefacility.example'
   });
   assert.equal(posted.status, 302);
 
@@ -264,10 +321,9 @@ test('posted jobs and applications survive a fresh process start', async () => {
   const out = JSON.parse(execFileSync(process.execPath, ['-e', script], { encoding: 'utf8' }));
 
   assert.ok(
-    out.titles.includes('Durability Probe Engineer'),
+    out.titles.includes('Durability Probe Driver'),
     'job posted before restart should still be listed'
   );
   assert.equal(out.applicants, 1, 'application submitted before restart should still be stored');
   assert.equal(out.storage.writable, true);
 });
-
