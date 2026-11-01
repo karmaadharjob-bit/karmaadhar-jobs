@@ -208,6 +208,7 @@ app.get('/post', (req, res) => {
   res.render('post', {
     title: 'Post a job',
     activeNav: 'post',
+    cities: store.getCities(),
     errors: {},
     values: {
       type: 'Full-time',
@@ -226,6 +227,7 @@ app.post('/post', (req, res) => {
     return res.status(400).render('post', {
       title: 'Post a job',
       activeNav: 'post',
+      cities: store.getCities(),
       errors,
       values: {
         ...data,
