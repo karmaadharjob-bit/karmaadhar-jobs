@@ -117,10 +117,13 @@ app.get('/', (req, res) => {
     q: text(req.query.q, 80),
     location: text(req.query.location, 90),
     category: text(req.query.category, 60),
-    type: text(req.query.type, 30)
+    type: text(req.query.type, 30),
+    workMode: text(req.query.workMode, 20)
   };
   const jobs = store.listJobs(filters);
-  const hasFilters = Boolean(filters.q || filters.location || filters.category || filters.type);
+  const hasFilters = Boolean(
+    filters.q || filters.location || filters.category || filters.type || filters.workMode
+  );
 
   res.render('index', {
     title: hasFilters ? `${jobs.length} job${jobs.length === 1 ? '' : 's'} found` : 'Find work that matters',
@@ -223,7 +226,8 @@ app.get('/api/jobs', (req, res) => {
     q: text(req.query.q, 80),
     location: text(req.query.location, 90),
     category: text(req.query.category, 60),
-    type: text(req.query.type, 30)
+    type: text(req.query.type, 30),
+    workMode: text(req.query.workMode, 20)
   });
   res.json({ count: jobs.length, jobs });
 });
