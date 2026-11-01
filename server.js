@@ -109,6 +109,12 @@ function validateJob(body) {
   if (data.category.length < 2) errors.category = 'Category is required.';
   if (!store.jobTypes.includes(data.type)) errors.type = 'Choose a valid job type.';
   if (!store.workModes.includes(data.workMode)) errors.workMode = 'Choose a valid work mode.';
+  if (!store.experienceOptions.includes(data.experience)) {
+    errors.experience = 'Choose the experience you need.';
+  }
+  if (!store.qualifications.includes(data.qualification)) {
+    errors.qualification = 'Choose a valid qualification.';
+  }
   if (data.description.length < 40) {
     errors.description = 'Please describe the role in at least 40 characters.';
   }
@@ -206,7 +212,9 @@ app.get('/post', (req, res) => {
     values: {
       type: 'Full-time',
       workMode: 'On-site',
-      salaryPeriod: 'year'
+      experience: 'Fresher',
+      qualification: '10th Pass',
+      salaryPeriod: 'month'
     },
     done: false
   });
