@@ -1,5 +1,7 @@
 <%- include('partials/head') %>
 
+<% const meta = categoryMeta(job.category); %>
+
 <div class="container detail-layout">
   <article class="job-detail">
     <a class="back-link" href="/">← All jobs</a>
@@ -11,46 +13,42 @@
     <% } %>
 
     <header class="job-head">
-      <span class="avatar avatar--lg" aria-hidden="true"><%= initials(job.company) %></span>
-      <div>
+      <span class="job-card-icon job-card-icon--lg tint-<%= meta.tint %>" aria-hidden="true"><%= meta.icon %></span>
+      <div class="job-head-body">
         <h1><%= job.title %></h1>
-        <p class="job-company"><%= job.company %><% if (job.companySize) { %> · <%= job.companySize %><% } %></p>
-        <ul class="meta-list">
-          <li class="chip"><%= job.location %></li>
-          <li class="chip"><%= job.workMode %></li>
-          <li class="chip"><%= job.type %></li>
-          <li class="chip"><%= job.experience %></li>
+        <p class="job-salary job-salary--lg"><%= formatSalary(job) %></p>
+        <p class="job-sub"><%= job.company %> · <%= job.category %></p>
+        <ul class="job-meta">
+          <li><span aria-hidden="true">📍</span><%= job.location %></li>
+          <li><span aria-hidden="true">💼</span><%= job.experience %></li>
+          <li><span aria-hidden="true">🎓</span><%= job.qualification %></li>
+          <li><span aria-hidden="true">🕒</span><%= job.type %></li>
+          <% if (job.workMode) { %><li><span aria-hidden="true">🏢</span><%= job.workMode %></li><% } %>
         </ul>
       </div>
     </header>
 
-    <dl class="fact-row">
-      <div>
-        <dt>Salary</dt>
-        <dd><%= formatSalary(job) %></dd>
-      </div>
-      <div>
-        <dt>Category</dt>
-        <dd><%= job.category %></dd>
-      </div>
-      <div>
-        <dt>Posted</dt>
-        <dd><%= timeAgo(job.postedAt) %></dd>
-      </div>
-      <div>
-        <dt>Applicants</dt>
-        <dd><%= applicants %></dd>
-      </div>
+    <a class="btn btn--accent btn--block mobile-apply" href="#apply">Apply for this job</a>
+
+    <dl class="detail-table">
+      <div><dt>Salary</dt><dd><%= formatSalary(job) %></dd></div>
+      <div><dt>Experience</dt><dd><%= job.experience %></dd></div>
+      <div><dt>Qualification</dt><dd><%= job.qualification %></dd></div>
+      <div><dt>Job type</dt><dd><%= job.type %></dd></div>
+      <div><dt>Area</dt><dd><%= job.location %></dd></div>
+      <div><dt>Posted</dt><dd><%= timeAgo(job.postedAt) %></dd></div>
+      <div><dt>Applicants</dt><dd><%= applicants %></dd></div>
+      <div><dt>Category</dt><dd><%= job.category %></dd></div>
     </dl>
 
     <section class="section-block">
-      <h2>About the role</h2>
+      <h2>Job description</h2>
       <p><%= job.description %></p>
     </section>
 
     <% if (job.responsibilities && job.responsibilities.length) { %>
     <section class="section-block">
-      <h2>What you will do</h2>
+      <h2>Your daily work</h2>
       <ul class="bullet-list">
         <% job.responsibilities.forEach(function (item) { %>
         <li><%= item %></li>
@@ -61,7 +59,7 @@
 
     <% if (job.requirements && job.requirements.length) { %>
     <section class="section-block">
-      <h2>What we are looking for</h2>
+      <h2>Who can apply</h2>
       <ul class="bullet-list">
         <% job.requirements.forEach(function (item) { %>
         <li><%= item %></li>
@@ -88,14 +86,14 @@
       <span class="success-check" aria-hidden="true">✓</span>
       <h2 id="apply-heading">Application sent</h2>
       <p>
-        Your application for <strong><%= job.title %></strong> has been recorded and shared with
-        <%= job.company %>. They usually respond within a week.
+        Your application for <strong><%= job.title %></strong> has reached
+        <%= job.company %>. They usually call back within a week.
       </p>
       <a class="btn btn--primary" href="/">Browse more jobs</a>
     </div>
     <% } else { %>
-    <h2 id="apply-heading">Apply for this role</h2>
-    <p class="apply-sub">Takes about two minutes. No account needed.</p>
+    <h2 id="apply-heading">Apply for this job</h2>
+    <p class="apply-sub">No resume needed. Employers see your name and mobile number.</p>
 
     <form action="/jobs/<%= job.id %>/apply" method="post" novalidate>
       <div class="form-field">
@@ -113,28 +111,30 @@
       </div>
 
       <div class="form-field">
-        <label for="phone">Phone <span class="optional">(optional)</span></label>
-        <input id="phone" name="phone" type="tel" value="<%= values.phone || '' %>"
+        <label for="phone">Mobile number <span class="optional">(optional)</span></label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" value="<%= values.phone || '' %>"
+          placeholder="10-digit mobile number"
           <%= errors.phone ? 'aria-invalid="true" class="input--error"' : '' %> />
         <% if (errors.phone) { %><p class="error-text"><%= errors.phone %></p><% } %>
       </div>
 
       <div class="form-field">
-        <label for="portfolio">Portfolio or LinkedIn <span class="optional">(optional)</span></label>
+        <label for="portfolio">Resume or profile link <span class="optional">(optional)</span></label>
         <input id="portfolio" name="portfolio" type="url" value="<%= values.portfolio || '' %>"
           placeholder="https://" <%= errors.portfolio ? 'aria-invalid="true" class="input--error"' : '' %> />
         <% if (errors.portfolio) { %><p class="error-text"><%= errors.portfolio %></p><% } %>
       </div>
 
       <div class="form-field">
-        <label for="coverLetter">Why are you a good fit?</label>
+        <label for="coverLetter">Why should they hire you?</label>
         <textarea id="coverLetter" name="coverLetter" rows="5" required
+          placeholder="For example: I have 2 years of delivery experience in Andheri and own a bike."
           <%= errors.coverLetter ? 'aria-invalid="true" class="input--error"' : '' %>><%= values.coverLetter || '' %></textarea>
         <% if (errors.coverLetter) { %><p class="error-text"><%= errors.coverLetter %></p><% } %>
       </div>
 
-      <button class="btn btn--primary btn--block" type="submit">Send application</button>
-      <p class="form-hint">By applying you agree to share these details with <%= job.company %>.</p>
+      <button class="btn btn--accent btn--block" type="submit">Send application</button>
+      <p class="form-hint">Your details are shared only with <%= job.company %>.</p>
     </form>
     <% } %>
   </aside>
