@@ -69,4 +69,4 @@ real risk here, because the process runs as the non-root `node` user.
 `test/app.test.js` covers listing/search/filter behaviour, job detail rendering, 404s,
 application validation and persistence, employer posting validation, HTML escaping of
 user input, the JSON API, health/storage reporting, and survival of posted data across
-a fresh process start (18 tests).
+a fresh process start (17 tests).
